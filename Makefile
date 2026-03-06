@@ -2,7 +2,7 @@ run:
 	go run main.go
 
 push:
-	git push origin main
+	git push origin master
 
 swag_init:
 	swag init -g api/router.go -o api/docs
