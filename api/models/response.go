@@ -38,4 +38,3 @@ type ValidationError struct {
 	Message     string
 	UserMessage string
 }
-
