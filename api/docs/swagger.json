@@ -212,17 +212,9 @@
         "models.AddUser": {
             "type": "object",
             "properties": {
-                "full_name": {
+                "email": {
                     "type": "string",
-                    "example": "Jumaniyozov Ibodulla"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1109659429
-                },
-                "is_premium": {
-                    "type": "boolean",
-                    "example": false
+                    "example": "jumaniyozovibodulla07@gmail.com"
                 },
                 "language": {
                     "type": "string",
@@ -232,9 +224,13 @@
                         " en"
                     ]
                 },
-                "username": {
+                "name": {
                     "type": "string",
-                    "example": "Ibodulla"
+                    "example": "Jumaniyozov Ibodulla"
+                },
+                "password_hash": {
+                    "type": "string",
+                    "example": "PASSWORD_HASH"
                 }
             }
         },
@@ -255,28 +251,16 @@
         "models.GetUser": {
             "type": "object",
             "properties": {
-                "cashback_balans": {
-                    "type": "number",
-                    "example": 0
-                },
                 "created_at": {
                     "type": "string"
                 },
-                "full_name": {
+                "email": {
                     "type": "string",
-                    "example": "Jumaniyozov Ibodulla"
+                    "example": "jumaniyozovibodulla07@gmail.com"
                 },
                 "id": {
-                    "type": "integer",
-                    "example": 1109659429
-                },
-                "is_admin": {
-                    "type": "boolean",
-                    "example": false
-                },
-                "is_premium": {
-                    "type": "boolean",
-                    "example": false
+                    "type": "string",
+                    "example": "9c1242b2-b211-4a91-ba6c-a58e903327fd"
                 },
                 "language": {
                     "type": "string",
@@ -286,9 +270,9 @@
                         " en"
                     ]
                 },
-                "username": {
+                "name": {
                     "type": "string",
-                    "example": "Ibodulla"
+                    "example": "Jumaniyozov Ibodulla"
                 }
             }
         },

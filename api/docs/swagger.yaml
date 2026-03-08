@@ -1,23 +1,20 @@
 definitions:
   models.AddUser:
     properties:
-      full_name:
-        example: Jumaniyozov Ibodulla
+      email:
+        example: jumaniyozovibodulla07@gmail.com
         type: string
-      id:
-        example: 1109659429
-        type: integer
-      is_premium:
-        example: false
-        type: boolean
       language:
         enum:
         - uz
         - ' ru'
         - ' en'
         type: string
-      username:
-        example: Ibodulla
+      name:
+        example: Jumaniyozov Ibodulla
+        type: string
+      password_hash:
+        example: PASSWORD_HASH
         type: string
     type: object
   models.GetAllUsersResponse:
@@ -31,31 +28,22 @@ definitions:
     type: object
   models.GetUser:
     properties:
-      cashback_balans:
-        example: 0
-        type: number
       created_at:
         type: string
-      full_name:
-        example: Jumaniyozov Ibodulla
+      email:
+        example: jumaniyozovibodulla07@gmail.com
         type: string
       id:
-        example: 1109659429
-        type: integer
-      is_admin:
-        example: false
-        type: boolean
-      is_premium:
-        example: false
-        type: boolean
+        example: 9c1242b2-b211-4a91-ba6c-a58e903327fd
+        type: string
       language:
         enum:
         - uz
         - ' ru'
         - ' en'
         type: string
-      username:
-        example: Ibodulla
+      name:
+        example: Jumaniyozov Ibodulla
         type: string
     type: object
   models.Response:
