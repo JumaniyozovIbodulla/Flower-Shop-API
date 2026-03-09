@@ -39,7 +39,7 @@ func (u userService) GetAll(ctx context.Context, req models.GetAllUsersRequest) 
 	return resp, nil
 }
 
-func (u userService) Delete(ctx context.Context, ID int64) error {
+func (u userService) Delete(ctx context.Context, ID string) error {
 
 	err := u.storage.Users().Delete(ctx, ID)
 	if err != nil {
@@ -48,3 +48,24 @@ func (u userService) Delete(ctx context.Context, ID int64) error {
 	}
 	return nil
 }
+
+func (u userService) Update(ctx context.Context, req models.UpdateUser) error {
+
+	err := u.storage.Users().Update(ctx, req)
+	if err != nil {
+		u.logger.Error("failed to update an user's info: ", logger.Error(err))
+		return err
+	}
+	return nil
+}
+
+func (u userService) UpdatePassword(ctx context.Context, req models.UpdateUserPassword) error {
+
+	err := u.storage.Users().UpdatePassword(ctx, req)
+	if err != nil {
+		u.logger.Error("failed to update an user's password: ", logger.Error(err))
+		return err
+	}
+	return nil
+}
+

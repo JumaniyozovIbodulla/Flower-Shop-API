@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -12,7 +10,7 @@ type User struct {
 	Email        string    `json:"email" example:"jumaniyozovibodulla07@gmail.com"`
 	Language     string    `json:"language" enums:"uz, ru, en"`
 	PasswordHash string    `json:"password_hash" example:"PASSWORD_HASH"`
-	CreatedAt    time.Time `json:"created_at"`
+	CreatedAt    int64     `json:"created_at"`
 }
 
 type GetUser struct {
@@ -20,7 +18,7 @@ type GetUser struct {
 	Name      string    `json:"name" example:"Jumaniyozov Ibodulla"`
 	Email     string    `json:"email" example:"jumaniyozovibodulla07@gmail.com"`
 	Language  string    `json:"language" enums:"uz, ru, en"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt int64     `json:"created_at"`
 }
 
 type AddUser struct {
@@ -31,10 +29,14 @@ type AddUser struct {
 }
 
 type UpdateUser struct {
+	ID       uuid.UUID `json:"id" example:"9c1242b2-b211-4a91-ba6c-a58e903327fd"`
+	Name     string    `json:"name" example:"Jumaniyozov Ibodulla"`
+	Email    string    `json:"email" example:"jumaniyozovibodulla07@gmail.com"`
+	Language string    `json:"language" enums:"uz, ru, en"`
+}
+
+type UpdateUserPassword struct {
 	ID           uuid.UUID `json:"id" example:"9c1242b2-b211-4a91-ba6c-a58e903327fd"`
-	Name         string    `json:"name" example:"Jumaniyozov Ibodulla"`
-	Email        string    `json:"email" example:"jumaniyozovibodulla07@gmail.com"`
-	Language     string    `json:"language" enums:"uz, ru, en"`
 	PasswordHash string    `json:"password_hash" example:"PASSWORD_HASH"`
 }
 

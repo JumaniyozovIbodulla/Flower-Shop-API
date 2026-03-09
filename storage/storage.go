@@ -13,8 +13,10 @@ type IStorage interface {
 }
 
 type UserStorage interface {
-	Create(ctx context.Context, user models.AddUser) error
-	Delete(ctx context.Context, ID int64) error
+	Create(ctx context.Context, req models.AddUser) error
+	Delete(ctx context.Context, ID string) error
+	Update(ctx context.Context, req models.UpdateUser) error
+	UpdatePassword(ctx context.Context, req models.UpdateUserPassword) error
 	GetAll(ctx context.Context, req models.GetAllUsersRequest) (models.GetAllUsersResponse, error)
 }
 

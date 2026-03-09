@@ -42,13 +42,13 @@ CREATE TABLE IF NOT EXISTS "user_roles" (
 
 
 CREATE TABLE IF NOT EXISTS "flowers" (
-    "id"            UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-    "title"         VARCHAR(255) NOT NULL,
-    "description"   TEXT DEFAULT '',
-    "price"         BIGINT NOT NULL CHECK ("price" >= 0),
-    "stock"         INT NOT NULL CHECK ("stock" >= 0) DEFAULT 0,
-    "is_active"     BOOLEAN NOT NULL DEFAULT TRUE,
-    "created_at"    TIMESTAMPTZ DEFAULT NOW()
+    "id"                 UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+    "title"              VARCHAR(255) UNIQUE NOT NULL,
+    "description"        TEXT DEFAULT '',
+    "unit_price"         BIGINT NOT NULL CHECK ("unit_price" >= 0),
+    "stock"              INT NOT NULL CHECK ("stock" >= 0) DEFAULT 0,
+    "is_active"          BOOLEAN NOT NULL DEFAULT TRUE,
+    "created_at"         TIMESTAMPTZ DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS "flower_media" (
@@ -67,16 +67,17 @@ CREATE TABLE IF NOT EXISTS "carts" (
 
 
 CREATE TABLE IF NOT EXISTS "cart_items" (
-    "id"        UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-    "cart_id"   UUID NOT NULL REFERENCES "carts"("id") ON DELETE CASCADE,
-    "flower_id" UUID NOT NULL REFERENCES "flowers"("id"),
-    "quantity"  INT NOT NULL CHECK ("quantity" > 0),
-    "price"     BIGINT NOT NULL CHECK("price" > 0)
+    "id"             UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+    "cart_id"        UUID NOT NULL REFERENCES "carts"("id") ON DELETE CASCADE,
+    "flower_id"      UUID NOT NULL REFERENCES "flowers"("id"),
+    "quantity"       INT NOT NULL CHECK ("quantity" > 0),
+    "unit_price"     BIGINT NOT NULL CHECK("unit_price" > 0),
+    UNIQUE ("cart_id", "flower_id")
 );
 
 CREATE TABLE IF NOT EXISTS "orders" (
     "id"            UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-    "order_number"  BIGINT UNIQUE DEFAULT (nextval('order_number_seq') * 7919),
+    "order_number"  BIGINT UNIQUE NOT NULL DEFAULT (nextval('order_number_seq') * 7919),
     "customer_id"   UUID NOT NULL REFERENCES "users"("id"),
     "total_price"   BIGINT NOT NULL CHECK("total_price" > 0),
     "status"        order_status NOT NULL DEFAULT 'pending',
@@ -85,11 +86,21 @@ CREATE TABLE IF NOT EXISTS "orders" (
 );
 
 
-CREATE TABLE IF NOT EXISTS "order_items" (
-    "id"        UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
-    "order_id"  UUID NOT NULL REFERENCES "orders"("id") ON DELETE CASCADE,
-    "flower_id" UUID NOT NULL REFERENCES "flowers"("id"),
-    "quantity"  INT NOT NULL CHECK ("quantity" > 0),
-    "price"     BIGINT NOT NULL CHECK("price" > 0)
+CREATE TABLE IF NOT EXISTS "order_status_history" (
+    "id"         UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+    "order_id"   UUID NOT NULL REFERENCES "orders"("id"),
+    "status"     order_status NOT NULL,
+    "created_at" TIMESTAMPTZ DEFAULT NOW()
 );
+
+
+CREATE TABLE IF NOT EXISTS "order_items" (
+    "id"             UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+    "order_id"       UUID NOT NULL REFERENCES "orders"("id") ON DELETE CASCADE,
+    "flower_id"      UUID NOT NULL REFERENCES "flowers"("id"),
+    "quantity"       INT NOT NULL CHECK ("quantity" > 0),
+    "unit_price"     BIGINT NOT NULL CHECK("unit_price" > 0),
+    UNIQUE("order_id", "flower_id")
+);
+
 

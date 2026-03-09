@@ -31,7 +31,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "This api CREATE AN USER",
+                "description": "THIS API CREATE AN USER",
                 "consumes": [
                     "application/json"
                 ],
@@ -157,20 +157,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Search BY FULL NAME",
-                        "name": "search_by_full_name",
+                        "description": "Search BY NAME",
+                        "name": "search_by_name",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Search BY USERNAME",
-                        "name": "search_by_username",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Search BY ID",
-                        "name": "search_by_id",
+                        "description": "Search BY EMAIL",
+                        "name": "search_by_email",
                         "in": "query"
                     },
                     {
@@ -191,12 +185,6 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.GetAllUsersResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/models.Response"
                         }
                     },
                     "404": {
@@ -259,7 +247,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "email": {
                     "type": "string",
@@ -322,7 +310,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "STAR FLOW PRO BACKEND",
+	Title:            "FLOWER SHOP API",
 	Description:      "This is a sample server celler server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

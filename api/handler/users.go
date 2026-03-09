@@ -1,19 +1,21 @@
 package handler
 
 import (
+	"errors"
 	_ "flower-shop/api/docs"
 	"flower-shop/api/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/cast"
+	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 // CreateUser godoc
 // @Security ApiKeyAuth
 // @Router		/api/v1/user [POST]
 // @Summary		CREATE AN USER
-// @Description	This api CREATE AN USER
+// @Description	THIS API CREATE AN USER
 // @Tags		USERS
 // @Accept		json
 // @Produce		json
@@ -32,7 +34,16 @@ func (h Handler) CreateUser(c *gin.Context) {
 
 	err := h.Service.User().Create(c.Request.Context(), user)
 	if err != nil {
-		handleResponse(c, h.Log, "error while creating user", http.StatusBadRequest, err.Error())
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) &&
+			pgErr.Code == "23505" &&
+			pgErr.ConstraintName == "users_email_key" {
+			
+			handleResponse(c, h.Log, "email already exists", http.StatusBadRequest, "email already exists")
+			return
+		}
+
+		handleResponse(c, h.Log, "error while creating user", http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -42,7 +53,7 @@ func (h Handler) CreateUser(c *gin.Context) {
 	})
 }
 
-// GetAllUser godoc
+// GetAllUsers godoc
 // @Security ApiKeyAuth
 // @Router		/api/v1/users [GET]
 // @Summary		GET ALL USERS
@@ -50,33 +61,22 @@ func (h Handler) CreateUser(c *gin.Context) {
 // @Tags		USERS
 // @Accept		json
 // @Produce		json
-// @Param		search_by_full_name query string false "Search BY FULL NAME"
-// @Param		search_by_username query string false "Search BY USERNAME"
-// @Param		search_by_id query int false "Search BY ID"
-// @Param		page query int false "page"
+// @Param		search_by_name  query string false "Search BY NAME"
+// @Param		search_by_email query string false "Search BY EMAIL"
+// @Param		page query  int false "page"
 // @Param		limit query int false "limit"
 // @Success		200  {object}  models.GetAllUsersResponse
-// @Failure		400  {object}  models.Response
 // @Failure		404  {object}  models.Response
 // @Failure		500  {object}  models.Response
-func (h Handler) GetAllUser(c *gin.Context) {
-	searchByFullName := c.Query("search_by_full_name")
-	searchByUsername := c.Query("search_by_username")
-	searchByID := c.Query("search_by_id")
-
-	if searchByID == "" {
-		searchByID = "0"
-	}
-
-	userID := cast.ToInt64(searchByID)
+func (h Handler) GetAllUsers(c *gin.Context) {
+	searchByName := c.Query("search_by_name")
+	searchByEmail := c.Query("search_by_email")
 
 	page, err := ParsePageQueryParam(c)
-
 	if err != nil {
 		handleResponse(c, h.Log, "error while parsing page", http.StatusBadRequest, err.Error())
 		return
 	}
-
 	limit, err := ParseLimitQueryParam(c)
 
 	if err != nil {
@@ -85,13 +85,11 @@ func (h Handler) GetAllUser(c *gin.Context) {
 	}
 
 	resp, err := h.Service.User().GetAll(c.Request.Context(), models.GetAllUsersRequest{
-		SearchByFullName: searchByFullName,
-		SearchByUsername: searchByUsername,
-		SearchByID:       userID,
-		Page:             page,
-		Limit:            limit,
+		SearchByName:  searchByName,
+		SearchByEmail: searchByEmail,
+		Page:          page,
+		Limit:         limit,
 	})
-
 	if err != nil {
 		handleResponse(c, h.Log, "error while getting all users", http.StatusInternalServerError, err.Error())
 		return
@@ -115,10 +113,12 @@ func (h Handler) GetAllUser(c *gin.Context) {
 // @Failure		500  {object}  models.Response
 func (h Handler) DeleteUser(c *gin.Context) {
 	id := c.Param("id")
+	if err := uuid.Validate(id); err != nil {
+		handleResponse(c, h.Log, "error while validating user's id", http.StatusBadRequest, err.Error())
+		return
+	}
 
-	userID := cast.ToInt64(id)
-
-	err := h.Service.User().Delete(c.Request.Context(), userID)
+	err := h.Service.User().Delete(c.Request.Context(), id)
 	if err != nil {
 		handleResponse(c, h.Log, "error while deleting user", http.StatusInternalServerError, err.Error())
 		return
@@ -126,6 +126,6 @@ func (h Handler) DeleteUser(c *gin.Context) {
 
 	handleResponseGet(c, h.Log, http.StatusOK, models.SeccessRequest{
 		Code:    "200",
-		Message: "user deleted successfully",
+		Message: "User deleted successfully",
 	})
 }

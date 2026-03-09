@@ -13,7 +13,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title           STAR FLOW PRO BACKEND
+// @title           FLOWER SHOP API
 // @version         1.0
 // @description     This is a sample server celler server.
 // @termsOfService  http://swagger.io/terms/
@@ -48,7 +48,7 @@ func New(store storage.IStorage, service service.IServiceManager, log logger.ILo
 
 	// users
 	r.POST("/api/v1/user", h.CreateUser)
-	r.GET("/api/v1/users", h.GetAllUser)
+	r.GET("/api/v1/users", h.GetAllUsers)
 	r.DELETE("/api/v1/user/:id", h.DeleteUser)
 
 	return r

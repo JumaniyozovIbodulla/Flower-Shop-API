@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -10,7 +8,7 @@ type Role struct {
 	ID          uuid.UUID `json:"id" example:"88361fd2-b050-4f41-ba25-e262aa7a3113"`
 	Name        string    `json:"name" example:"Manager"`
 	Description string    `json:"description" example:"Manages only orders"`
-	CreatedAt   time.Time `json:"created_at"`
+	CreatedAt   int64     `json:"created_at"`
 }
 
 type AddRole struct {

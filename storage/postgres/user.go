@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"flower-shop/api/models"
+	"fmt"
 	"strconv"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -18,30 +19,24 @@ func NewUser(db *pgxpool.Pool) userRepo {
 	}
 }
 
-func (u *userRepo) Create(ctx context.Context, user models.AddUser) error {
+func (u *userRepo) Create(ctx context.Context, req models.AddUser) error {
 
 	_, err := u.db.Exec(ctx, `
 	INSERT INTO
 		users(
-		id, 
-		fullname, 
-		username, 
-		lang, 
-		is_premium)
+			name, 
+			email, 
+			lang, 
+			password_hash)
 	VALUES(
 		$1, 
 		$2, 
 		$3, 
-		$4, 
-		$5)
-	ON CONFLICT 
-		(id) DO UPDATE
-	SET deleted_at = NULL;`,
-		user.ID,
-		user.FullName,
-		user.Username,
-		user.Language,
-		user.IsPremium)
+		$4);`,
+		req.Name,
+		req.Email,
+		req.Language,
+		req.PasswordHash)
 
 	if err != nil {
 		return err
@@ -49,44 +44,91 @@ func (u *userRepo) Create(ctx context.Context, user models.AddUser) error {
 	return nil
 }
 
-func (u *userRepo) Delete(ctx context.Context, ID int64) error {
+func (u *userRepo) Delete(ctx context.Context, ID string) error {
+	query := `
+	DELETE FROM
+		users
+	WHERE 
+		id = $1;`
+
+	res, err := u.db.Exec(ctx, query, ID)
+	if err != nil {
+		return err
+	}
+
+	countRowsAffected := res.RowsAffected()
+	
+	if countRowsAffected == 0 {
+		return fmt.Errorf("user not found to delete")
+	}
+
+	return nil
+}
+
+func (u *userRepo) Update(ctx context.Context, req models.UpdateUser) error {
 	query := `
 	UPDATE
 		users
 	SET
-		deleted_at = NOW()
-	WHERE 
+		name = $2,
+		email = $3,
+		lang = $4
+	WHERE
 		id = $1;`
 
-	_, err := u.db.Exec(ctx, query, ID)
+	res, err := u.db.Exec(ctx, query, req.ID, req.Name, req.Email, req.Language)
 	if err != nil {
 		return err
 	}
+
+	countRowsAffected := res.RowsAffected()
+	
+	if countRowsAffected == 0 {
+		return fmt.Errorf("user not found to delete")
+	}
+
+	return nil
+}
+
+func (u *userRepo) UpdatePassword(ctx context.Context, req models.UpdateUserPassword) error {
+	query := `
+	UPDATE
+		users
+	SET
+		password_hash = $2
+	WHERE
+		id = $1;`
+
+	res, err := u.db.Exec(ctx, query, req.ID, req.PasswordHash)
+	if err != nil {
+		return err
+	}
+
+	countRowsAffected := res.RowsAffected()
+	
+	if countRowsAffected == 0 {
+		return fmt.Errorf("user not found to update the password")
+	}
+
 	return nil
 }
 
 func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (models.GetAllUsersResponse, error) {
 	resp := models.GetAllUsersResponse{}
 
-	filter := "deleted_at IS NULL"
+	filter := "TRUE"
 	args := []interface{}{}
 	argIdx := 1
 
-	if req.SearchByFullName != "" {
-		filter += " AND fullname ILIKE $" + strconv.Itoa(argIdx)
-		args = append(args, "%"+req.SearchByFullName+"%")
+	if req.SearchByName != "" {
+		filter += " AND name ILIKE $" + strconv.Itoa(argIdx)
+		args = append(args, "%"+req.SearchByName+"%")
 		argIdx++
 	}
 
-	if req.SearchByUsername != "" {
-		filter += " AND username ILIKE $" + strconv.Itoa(argIdx)
-		args = append(args, "%"+req.SearchByUsername+"%")
-		argIdx++
-	}
-
-	if req.SearchByID != 0 {
-		filter += " AND id = $" + strconv.Itoa(argIdx)
-		args = append(args, req.SearchByID)
+	if req.SearchByEmail != "" {
+		filter += " AND email ILIKE $" + strconv.Itoa(argIdx)
+		args = append(args, "%"+req.SearchByEmail+"%")
 		argIdx++
 	}
 
@@ -96,34 +138,33 @@ func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (m
 	query := `
 	SELECT
 		id,
-		fullname,
-		username,
+		name,
+		email,
 		lang,
-		is_premium,
-		cashback_balans,
-		is_admin,
-		TO_CHAR(created_at, 'DD-MM-YYYY HH24:MI:SS') as created_at
-	FROM users
-	WHERE ` + filter + `
-	OFFSET $` + strconv.Itoa(argIdx) + `
-	LIMIT $` + strconv.Itoa(argIdx+1) + `;`
+		EXTRACT(EPOCH FROM created_at)::BIGINT AS created_at
+	FROM 
+		users
+	WHERE 
+		` + filter + `
+	OFFSET 
+		$` + strconv.Itoa(argIdx) + `
+	LIMIT 
+		$` + strconv.Itoa(argIdx+1) + `;`
 
 	rows, err := u.db.Query(ctx, query, args...)
 	if err != nil {
 		return resp, err
 	}
+
 	defer rows.Close()
 
 	for rows.Next() {
 		var user models.GetUser
 		if err := rows.Scan(
 			&user.ID,
-			&user.FullName,
-			&user.Username,
+			&user.Name,
+			&user.Email,
 			&user.Language,
-			&user.IsPremium,
-			&user.CashbackBalans,
-			&user.IsAdmin,
 			&user.CreatedAt,
 		); err != nil {
 			return resp, err
@@ -131,7 +172,6 @@ func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (m
 		resp.Users = append(resp.Users, user)
 	}
 
-	// Count query
 	countQuery := `SELECT COUNT(*) FROM users WHERE ` + filter
 	countArgs := args[:len(args)-2] // OFFSET va LIMIT ni hisobga olmang
 	err = u.db.QueryRow(ctx, countQuery, countArgs...).Scan(&resp.Count)
@@ -141,3 +181,4 @@ func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (m
 
 	return resp, nil
 }
+

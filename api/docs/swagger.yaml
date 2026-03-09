@@ -29,7 +29,7 @@ definitions:
   models.GetUser:
     properties:
       created_at:
-        type: string
+        type: integer
       email:
         example: jumaniyozovibodulla07@gmail.com
         type: string
@@ -72,14 +72,14 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: STAR FLOW PRO BACKEND
+  title: FLOWER SHOP API
   version: "1.0"
 paths:
   /api/v1/user:
     post:
       consumes:
       - application/json
-      description: This api CREATE AN USER
+      description: THIS API CREATE AN USER
       parameters:
       - description: USER INFO
         in: body
@@ -152,18 +152,14 @@ paths:
       - application/json
       description: THIS API GET ALL USERS
       parameters:
-      - description: Search BY FULL NAME
+      - description: Search BY NAME
         in: query
-        name: search_by_full_name
+        name: search_by_name
         type: string
-      - description: Search BY USERNAME
+      - description: Search BY EMAIL
         in: query
-        name: search_by_username
+        name: search_by_email
         type: string
-      - description: Search BY ID
-        in: query
-        name: search_by_id
-        type: integer
       - description: page
         in: query
         name: page
@@ -179,10 +175,6 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.GetAllUsersResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
         "404":
           description: Not Found
           schema:

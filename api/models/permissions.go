@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
@@ -10,7 +8,7 @@ type Permission struct {
 	ID          uuid.UUID `json:"id" example:"ccae8606-8be2-4621-9086-4144214b167b"`
 	Name        string    `json:"name" example:"create_flower"`
 	Description string    `json:"description" example:"Can add a new flowers"`
-	CreatedAt   time.Time `json:"created_at"`
+	CreatedAt   int64     `json:"created_at"`
 }
 
 type AddPermission struct {
