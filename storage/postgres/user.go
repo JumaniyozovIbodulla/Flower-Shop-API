@@ -59,7 +59,7 @@ func (u *userRepo) Delete(ctx context.Context, ID string) error {
 	countRowsAffected := res.RowsAffected()
 
 	if countRowsAffected == 0 {
-		return pkg.UserNotFoundErr
+		return pkg.NotFoundErr
 	}
 
 	return nil
@@ -84,7 +84,7 @@ func (u *userRepo) Update(ctx context.Context, req models.UpdateUser) error {
 	countRowsAffected := res.RowsAffected()
 
 	if countRowsAffected == 0 {
-		return pkg.UserNotFoundErr
+		return pkg.NotFoundErr
 	}
 
 	return nil
@@ -107,7 +107,7 @@ func (u *userRepo) UpdatePassword(ctx context.Context, req models.UpdateUserPass
 	countRowsAffected := res.RowsAffected()
 
 	if countRowsAffected == 0 {
-		return pkg.UserNotFoundErr
+		return pkg.NotFoundErr
 	}
 
 	return nil

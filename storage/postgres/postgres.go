@@ -52,6 +52,11 @@ func (s Store) Roles() storage.RoleStorage {
 	return &newRole
 }
 
+func (s Store) Permissions() storage.PermissionStorage {
+	newPermission := NewPermission(s.Pool)
+	return &newPermission
+}
+
 func (s Store) Redis() storage.IRedisStorage {
 	return redis.New(s.cfg)
 }

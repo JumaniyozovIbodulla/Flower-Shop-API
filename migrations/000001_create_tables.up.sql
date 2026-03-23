@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS "roles" (
 CREATE TABLE IF NOT EXISTS "permissions" (
     "id"            UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
     "name"          VARCHAR(255) NOT NULL UNIQUE, -- create_flower, delete_flower
-    "description"   TEXT,
+    "description"   TEXT DEFAULT '',
     "created_at"    TIMESTAMPTZ DEFAULT NOW()
 );
 

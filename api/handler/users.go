@@ -137,7 +137,7 @@ func (h Handler) DeleteUser(c *gin.Context) {
 
 	err := h.Service.User().Delete(c.Request.Context(), id)
 	if err != nil {
-		if errors.Is(err, pkg.UserNotFoundErr) {
+		if errors.Is(err, pkg.NotFoundErr) {
 			handleResponse(c, h.Log, "error while deleting, user not found", http.StatusNotFound, err.Error())
 			return
 		}

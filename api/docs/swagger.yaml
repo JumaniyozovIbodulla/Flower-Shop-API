@@ -1,4 +1,13 @@
 definitions:
+  models.AddPermission:
+    properties:
+      description:
+        example: Can add a new flowers
+        type: string
+      name:
+        example: create_flower
+        type: string
+    type: object
   models.AddRole:
     properties:
       description:
@@ -70,6 +79,18 @@ definitions:
       message:
         type: string
     type: object
+  models.UpdatePermission:
+    properties:
+      description:
+        example: Can remove a flower
+        type: string
+      id:
+        example: ccae8606-8be2-4621-9086-4144214b167b
+        type: string
+      name:
+        example: delete_flower
+        type: string
+    type: object
   models.UpdateRole:
     properties:
       description:
@@ -96,6 +117,150 @@ info:
   title: FLOWER SHOP API
   version: "1.0"
 paths:
+  /api/v1/permission:
+    post:
+      consumes:
+      - application/json
+      description: THIS API CREATE AN PERMISSION
+      parameters:
+      - description: PERMISSION INFO
+        in: body
+        name: permissions
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddPermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: CREATE A PERMISSION
+      tags:
+      - PERMISSIONS
+    put:
+      consumes:
+      - application/json
+      description: THIS API UPDATE THE PERMISSION
+      parameters:
+      - description: ROLE INFO
+        in: body
+        name: permission
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdatePermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: UPDATE THE PERMISSION
+      tags:
+      - PERMISSIONS
+  /api/v1/permission/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: THIS API DELETE THE PERMISSION
+      parameters:
+      - description: PERMISSION ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: DELETE A PERMISSION
+      tags:
+      - PERMISSIONS
+  /api/v1/permissions:
+    get:
+      consumes:
+      - application/json
+      description: THIS API GET ALL PERMISSIONS
+      parameters:
+      - description: Search BY NAME
+        in: query
+        name: name
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllUsersResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: GET ALL PERMISSIONS
+      tags:
+      - PERMISSIONS
   /api/v1/role:
     post:
       consumes:

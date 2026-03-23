@@ -9,21 +9,21 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type roleRepo struct {
+type permissionRepo struct {
 	db *pgxpool.Pool
 }
 
-func NewRole(db *pgxpool.Pool) roleRepo {
-	return roleRepo{
+func NewPermission(db *pgxpool.Pool) permissionRepo {
+	return permissionRepo{
 		db: db,
 	}
 }
 
-func (r *roleRepo) Create(ctx context.Context, req models.AddRole) error {
+func (p *permissionRepo) Create(ctx context.Context, req models.AddPermission) error {
 
-	_, err := r.db.Exec(ctx, `
+	_, err := p.db.Exec(ctx, `
 	INSERT INTO
-		roles(
+		permissions(
 			name, 
 			description)
 	VALUES(
@@ -38,14 +38,14 @@ func (r *roleRepo) Create(ctx context.Context, req models.AddRole) error {
 	return nil
 }
 
-func (r *roleRepo) Delete(ctx context.Context, ID string) error {
+func (p *permissionRepo) Delete(ctx context.Context, ID string) error {
 	query := `
 	DELETE FROM
-		roles
+		permissions
 	WHERE 
 		id = $1;`
 
-	res, err := r.db.Exec(ctx, query, ID)
+	res, err := p.db.Exec(ctx, query, ID)
 	if err != nil {
 		return err
 	}
@@ -59,18 +59,17 @@ func (r *roleRepo) Delete(ctx context.Context, ID string) error {
 	return nil
 }
 
-func (r *roleRepo) Update(ctx context.Context, req models.UpdateRole) error {
-	
+func (p *permissionRepo) Update(ctx context.Context, req models.UpdatePermission) error {
 	query := `
 	UPDATE
-		roles
+		permissions
 	SET
 		name = $2,
 		description = $3
 	WHERE
 		id = $1;`
 
-	res, err := r.db.Exec(ctx, query, req.ID, req.Name, req.Description)
+	res, err := p.db.Exec(ctx, query, req.ID, req.Name, req.Description)
 	if err != nil {
 		return err
 	}
@@ -84,8 +83,8 @@ func (r *roleRepo) Update(ctx context.Context, req models.UpdateRole) error {
 	return nil
 }
 
-func (r *roleRepo) GetAll(ctx context.Context, req models.GetAllRolesRequest) (models.GetAllRolesResponse, error) {
-	resp := models.GetAllRolesResponse{}
+func (p *permissionRepo) GetAll(ctx context.Context, req models.GetAllPermissionsRequest) (models.GetAllPermissionsResponse, error) {
+	resp := models.GetAllPermissionsResponse{}
 
 	filter := "TRUE"
 	args := []interface{}{}
@@ -107,7 +106,7 @@ func (r *roleRepo) GetAll(ctx context.Context, req models.GetAllRolesRequest) (m
 		description,
 		EXTRACT(EPOCH FROM created_at)::BIGINT AS created_at
 	FROM 
-		roles
+		permissions
 	WHERE 
 		` + filter + `
 	OFFSET 
@@ -115,7 +114,7 @@ func (r *roleRepo) GetAll(ctx context.Context, req models.GetAllRolesRequest) (m
 	LIMIT 
 		$` + strconv.Itoa(argIdx+1) + `;`
 
-	rows, err := r.db.Query(ctx, query, args...)
+	rows, err := p.db.Query(ctx, query, args...)
 	if err != nil {
 		return resp, err
 	}
@@ -123,26 +122,24 @@ func (r *roleRepo) GetAll(ctx context.Context, req models.GetAllRolesRequest) (m
 	defer rows.Close()
 
 	for rows.Next() {
-		var role models.Role
+		var permission models.Permission
 		if err := rows.Scan(
-			&role.ID,
-			&role.Name,
-			&role.Description,
-			&role.CreatedAt,
+			&permission.ID,
+			&permission.Name,
+			&permission.Description,
+			&permission.CreatedAt,
 		); err != nil {
 			return resp, err
 		}
-		resp.Roles = append(resp.Roles, role)
+		resp.Permissions = append(resp.Permissions, permission)
 	}
 
-	countQuery := `SELECT COUNT(*) FROM roles WHERE ` + filter
+	countQuery := `SELECT COUNT(*) FROM permissions WHERE ` + filter
 	countArgs := args[:len(args)-2] // OFFSET va LIMIT ni hisobga olmang
-	err = r.db.QueryRow(ctx, countQuery, countArgs...).Scan(&resp.Count)
+	err = p.db.QueryRow(ctx, countQuery, countArgs...).Scan(&resp.Count)
 	if err != nil {
 		return resp, err
 	}
 
 	return resp, nil
 }
-
-

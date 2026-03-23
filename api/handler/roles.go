@@ -121,7 +121,7 @@ func (h Handler) UpdateRole(c *gin.Context) {
 
 	err := h.Service.Role().Update(c.Request.Context(), role)
 	if err != nil {
-		if errors.Is(err, pkg.RoleNotFoundErr) {
+		if errors.Is(err, pkg.NotFoundErr) {
 			handleResponse(c, h.Log, "error while deleting, role not found", http.StatusNotFound, err.Error())
 			return
 		}
@@ -158,7 +158,7 @@ func (h Handler) DeleteRole(c *gin.Context) {
 
 	err := h.Service.Role().Delete(c.Request.Context(), id)
 	if err != nil {
-		if errors.Is(err, pkg.UserNotFoundErr) {
+		if errors.Is(err, pkg.NotFoundErr) {
 			handleResponse(c, h.Log, "error while deleting, role not found", http.StatusNotFound, err.Error())
 			return
 		}
