@@ -64,6 +64,12 @@ func New(store storage.IStorage, service service.IServiceManager, log logger.ILo
 	r.GET("/api/v1/permissions", h.GetAllPermissions)
 	r.DELETE("/api/v1/permission/:id", h.DeletePermission)
 
+
+	// role permissions
+	r.POST("/api/v1/role-permission", h.CreateRolePermission)
+	r.DELETE("/api/v1/role-permission", h.DeleteRolePermission)
+
+
 	return r
 }
 

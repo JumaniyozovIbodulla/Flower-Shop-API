@@ -134,6 +134,61 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "THIS API DELETES THE ROLE PERMISSION",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ROLE-PERMISSIONS"
+                ],
+                "summary": "DELETE THE ROLE PERMISSION",
+                "parameters": [
+                    {
+                        "description": "ROLE PERMISSION",
+                        "name": "rolePermission",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RolePermission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SeccessRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/permission/{id}": {
@@ -332,6 +387,63 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.AddRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SeccessRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/role-permission": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "THIS API CREATE A ROLE PERMISSION",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ROLE-PERMISSIONS"
+                ],
+                "summary": "CREATE A ROLE PERMISSION",
+                "parameters": [
+                    {
+                        "description": "ROLE PERMISSION",
+                        "name": "role_permissions",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RolePermission"
                         }
                     }
                 ],
@@ -760,6 +872,19 @@ const docTemplate = `{
                 },
                 "statusCode": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.RolePermission": {
+            "type": "object",
+            "properties": {
+                "permission_id": {
+                    "type": "string",
+                    "example": "ccae8606-8be2-4621-9086-4144214b167b"
+                },
+                "role_id": {
+                    "type": "string",
+                    "example": "88361fd2-b050-4f41-ba25-e262aa7a3113"
                 }
             }
         },

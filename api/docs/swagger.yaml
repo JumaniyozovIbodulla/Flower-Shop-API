@@ -72,6 +72,15 @@ definitions:
       statusCode:
         type: integer
     type: object
+  models.RolePermission:
+    properties:
+      permission_id:
+        example: ccae8606-8be2-4621-9086-4144214b167b
+        type: string
+      role_id:
+        example: 88361fd2-b050-4f41-ba25-e262aa7a3113
+        type: string
+    type: object
   models.SeccessRequest:
     properties:
       code:
@@ -118,6 +127,41 @@ info:
   version: "1.0"
 paths:
   /api/v1/permission:
+    delete:
+      consumes:
+      - application/json
+      description: THIS API DELETES THE ROLE PERMISSION
+      parameters:
+      - description: ROLE PERMISSION
+        in: body
+        name: rolePermission
+        required: true
+        schema:
+          $ref: '#/definitions/models.RolePermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: DELETE THE ROLE PERMISSION
+      tags:
+      - ROLE-PERMISSIONS
     post:
       consumes:
       - application/json
@@ -332,6 +376,42 @@ paths:
       summary: UPDATE THE ROLE
       tags:
       - ROLES
+  /api/v1/role-permission:
+    post:
+      consumes:
+      - application/json
+      description: THIS API CREATE A ROLE PERMISSION
+      parameters:
+      - description: ROLE PERMISSION
+        in: body
+        name: role_permissions
+        required: true
+        schema:
+          $ref: '#/definitions/models.RolePermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: CREATE A ROLE PERMISSION
+      tags:
+      - ROLE-PERMISSIONS
   /api/v1/role/{id}:
     delete:
       consumes:

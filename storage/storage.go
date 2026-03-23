@@ -11,6 +11,8 @@ type IStorage interface {
 	Users() UserStorage
 	Roles() RoleStorage
 	Permissions() PermissionStorage
+	RolePermissions() RolePermissionsStorage
+	UserRoles() UserRolesStorage
 	Redis() IRedisStorage
 }
 
@@ -34,6 +36,16 @@ type PermissionStorage interface {
 	Delete(ctx context.Context, ID string) error
 	Update(ctx context.Context, req models.UpdatePermission) error
 	GetAll(ctx context.Context, req models.GetAllPermissionsRequest) (models.GetAllPermissionsResponse, error)
+}
+
+type RolePermissionsStorage interface {
+	Create(ctx context.Context, req models.RolePermission) error
+	Delete(ctx context.Context, req models.RolePermission) error
+}
+
+type UserRolesStorage interface {
+	Create(ctx context.Context, req models.UserRole) error
+	Delete(ctx context.Context, req models.UserRole) error
 }
 
 type IRedisStorage interface {
