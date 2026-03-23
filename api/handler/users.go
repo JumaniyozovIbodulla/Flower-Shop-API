@@ -4,7 +4,9 @@ import (
 	"errors"
 	_ "flower-shop/api/docs"
 	"flower-shop/api/models"
+	"flower-shop/pkg"
 	"net/http"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -32,13 +34,26 @@ func (h Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	err := h.Service.User().Create(c.Request.Context(), user)
+	if !slices.Contains([]string{"uz", "ru", "en"}, user.Language) {
+		handleResponse(c, h.Log, "error while checking language", http.StatusBadRequest, "language is mismatch")
+		return
+	}
+
+	hashedPasswod, err := pkg.HashPassword(user.PasswordHash)
+	if err != nil {
+		handleResponse(c, h.Log, "error while hashing the password", http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	user.PasswordHash = hashedPasswod
+
+	err = h.Service.User().Create(c.Request.Context(), user)
 	if err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) &&
 			pgErr.Code == "23505" &&
 			pgErr.ConstraintName == "users_email_key" {
-			
+
 			handleResponse(c, h.Log, "email already exists", http.StatusBadRequest, "email already exists")
 			return
 		}
@@ -49,7 +64,7 @@ func (h Handler) CreateUser(c *gin.Context) {
 
 	handleResponseGet(c, h.Log, http.StatusCreated, models.SeccessRequest{
 		Code:    "201",
-		Message: "Yangi foydalanuvchi qo'shildi",
+		Message: "added new user",
 	})
 }
 
@@ -77,6 +92,7 @@ func (h Handler) GetAllUsers(c *gin.Context) {
 		handleResponse(c, h.Log, "error while parsing page", http.StatusBadRequest, err.Error())
 		return
 	}
+
 	limit, err := ParseLimitQueryParam(c)
 
 	if err != nil {
@@ -90,6 +106,7 @@ func (h Handler) GetAllUsers(c *gin.Context) {
 		Page:          page,
 		Limit:         limit,
 	})
+
 	if err != nil {
 		handleResponse(c, h.Log, "error while getting all users", http.StatusInternalServerError, err.Error())
 		return
@@ -120,12 +137,17 @@ func (h Handler) DeleteUser(c *gin.Context) {
 
 	err := h.Service.User().Delete(c.Request.Context(), id)
 	if err != nil {
+		if errors.Is(err, pkg.UserNotFoundErr) {
+			handleResponse(c, h.Log, "error while deleting, user not found", http.StatusNotFound, err.Error())
+			return
+		}
+
 		handleResponse(c, h.Log, "error while deleting user", http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	handleResponseGet(c, h.Log, http.StatusOK, models.SeccessRequest{
 		Code:    "200",
-		Message: "User deleted successfully",
+		Message: "user deleted successfully",
 	})
 }

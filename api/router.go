@@ -51,6 +51,12 @@ func New(store storage.IStorage, service service.IServiceManager, log logger.ILo
 	r.GET("/api/v1/users", h.GetAllUsers)
 	r.DELETE("/api/v1/user/:id", h.DeleteUser)
 
+	// roles
+	r.POST("/api/v1/role", h.CreateRole)
+	r.PUT("/api/v1/role", h.UpdateRole)
+	r.GET("/api/v1/roles", h.GetAllRoles)
+	r.DELETE("/api/v1/role/:id", h.DeleteRole)
+
 	return r
 }
 

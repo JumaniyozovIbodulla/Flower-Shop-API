@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 	"flower-shop/api/models"
-	"fmt"
+	"flower-shop/pkg"
 	"strconv"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,9 +57,9 @@ func (u *userRepo) Delete(ctx context.Context, ID string) error {
 	}
 
 	countRowsAffected := res.RowsAffected()
-	
+
 	if countRowsAffected == 0 {
-		return fmt.Errorf("user not found to delete")
+		return pkg.UserNotFoundErr
 	}
 
 	return nil
@@ -82,9 +82,9 @@ func (u *userRepo) Update(ctx context.Context, req models.UpdateUser) error {
 	}
 
 	countRowsAffected := res.RowsAffected()
-	
+
 	if countRowsAffected == 0 {
-		return fmt.Errorf("user not found to delete")
+		return pkg.UserNotFoundErr
 	}
 
 	return nil
@@ -105,9 +105,9 @@ func (u *userRepo) UpdatePassword(ctx context.Context, req models.UpdateUserPass
 	}
 
 	countRowsAffected := res.RowsAffected()
-	
+
 	if countRowsAffected == 0 {
-		return fmt.Errorf("user not found to update the password")
+		return pkg.UserNotFoundErr
 	}
 
 	return nil
@@ -127,8 +127,8 @@ func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (m
 	}
 
 	if req.SearchByEmail != "" {
-		filter += " AND email ILIKE $" + strconv.Itoa(argIdx)
-		args = append(args, "%"+req.SearchByEmail+"%")
+		filter += " AND email = $" + strconv.Itoa(argIdx)
+		args = append(args, req.SearchByEmail)
 		argIdx++
 	}
 
@@ -181,4 +181,3 @@ func (u *userRepo) GetAll(ctx context.Context, req models.GetAllUsersRequest) (m
 
 	return resp, nil
 }
-

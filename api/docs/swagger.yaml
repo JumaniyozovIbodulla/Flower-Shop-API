@@ -1,4 +1,13 @@
 definitions:
+  models.AddRole:
+    properties:
+      description:
+        example: Manages only orders
+        type: string
+      name:
+        example: Manager
+        type: string
+    type: object
   models.AddUser:
     properties:
       email:
@@ -61,6 +70,18 @@ definitions:
       message:
         type: string
     type: object
+  models.UpdateRole:
+    properties:
+      description:
+        example: Manages only orders
+        type: string
+      id:
+        example: 88361fd2-b050-4f41-ba25-e262aa7a3113
+        type: string
+      name:
+        example: Manager
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -75,6 +96,150 @@ info:
   title: FLOWER SHOP API
   version: "1.0"
 paths:
+  /api/v1/role:
+    post:
+      consumes:
+      - application/json
+      description: THIS API CREATE AN ROLE
+      parameters:
+      - description: ROLE INFO
+        in: body
+        name: roles
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: CREATE A ROLE
+      tags:
+      - ROLES
+    put:
+      consumes:
+      - application/json
+      description: THIS API UPDATE THE ROLE
+      parameters:
+      - description: ROLE INFO
+        in: body
+        name: roles
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: UPDATE THE ROLE
+      tags:
+      - ROLES
+  /api/v1/role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: THIS API DELETE THE ROLE
+      parameters:
+      - description: ROLE ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: DELETE A ROLE
+      tags:
+      - ROLES
+  /api/v1/roles:
+    get:
+      consumes:
+      - application/json
+      description: THIS API GET ALL ROLES
+      parameters:
+      - description: Search BY NAME
+        in: query
+        name: name
+        type: string
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetAllUsersResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: GET ALL ROLES
+      tags:
+      - ROLES
   /api/v1/user:
     post:
       consumes:

@@ -9,6 +9,7 @@ import (
 type IStorage interface {
 	CloseDB()
 	Users() UserStorage
+	Roles() RoleStorage
 	Redis() IRedisStorage
 }
 
@@ -18,6 +19,13 @@ type UserStorage interface {
 	Update(ctx context.Context, req models.UpdateUser) error
 	UpdatePassword(ctx context.Context, req models.UpdateUserPassword) error
 	GetAll(ctx context.Context, req models.GetAllUsersRequest) (models.GetAllUsersResponse, error)
+}
+
+type RoleStorage interface {
+	Create(ctx context.Context, req models.AddRole) error
+	Delete(ctx context.Context, ID string) error
+	Update(ctx context.Context, req models.UpdateRole) error
+	GetAll(ctx context.Context, req models.GetAllRolesRequest) (models.GetAllRolesResponse, error)
 }
 
 type IRedisStorage interface {
