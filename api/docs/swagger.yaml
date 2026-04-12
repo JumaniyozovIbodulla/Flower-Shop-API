@@ -112,6 +112,15 @@ definitions:
         example: Manager
         type: string
     type: object
+  models.UserRole:
+    properties:
+      role_id:
+        example: 88361fd2-b050-4f41-ba25-e262aa7a3113
+        type: string
+      user_id:
+        example: 9c1242b2-b211-4a91-ba6c-a58e903327fd
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -127,41 +136,6 @@ info:
   version: "1.0"
 paths:
   /api/v1/permission:
-    delete:
-      consumes:
-      - application/json
-      description: THIS API DELETES THE ROLE PERMISSION
-      parameters:
-      - description: ROLE PERMISSION
-        in: body
-        name: rolePermission
-        required: true
-        schema:
-          $ref: '#/definitions/models.RolePermission'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.SeccessRequest'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.Response'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.Response'
-      security:
-      - ApiKeyAuth: []
-      summary: DELETE THE ROLE PERMISSION
-      tags:
-      - ROLE-PERMISSIONS
     post:
       consumes:
       - application/json
@@ -377,6 +351,41 @@ paths:
       tags:
       - ROLES
   /api/v1/role-permission:
+    delete:
+      consumes:
+      - application/json
+      description: THIS API DELETES THE ROLE PERMISSION
+      parameters:
+      - description: ROLE PERMISSION
+        in: body
+        name: rolePermission
+        required: true
+        schema:
+          $ref: '#/definitions/models.RolePermission'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: DELETE THE ROLE PERMISSION
+      tags:
+      - ROLE-PERMISSIONS
     post:
       consumes:
       - application/json
@@ -521,6 +530,112 @@ paths:
       summary: CREATE AN USER
       tags:
       - USERS
+  /api/v1/user-role:
+    delete:
+      consumes:
+      - application/json
+      description: THIS API DELETES THE USER ROLE
+      parameters:
+      - description: User Role
+        in: body
+        name: user_role
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: DELETE THE USER ROLE
+      tags:
+      - USER-ROLES
+    post:
+      consumes:
+      - application/json
+      description: THIS API CREATE A USER-ROLE
+      parameters:
+      - description: User Role model
+        in: body
+        name: user_role
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: CREATE A USER-ROLE
+      tags:
+      - USER-ROLES
+    put:
+      consumes:
+      - application/json
+      description: THIS API UPDATES THE USER ROLE
+      parameters:
+      - description: User Role
+        in: body
+        name: user_role
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRole'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SeccessRequest'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: UPDATE THE USER ROLE
+      tags:
+      - USER-ROLES
   /api/v1/user/{id}:
     delete:
       consumes:

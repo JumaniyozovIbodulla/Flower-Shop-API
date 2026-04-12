@@ -55,7 +55,7 @@ func (h Handler) CreateRolePermission(c *gin.Context) {
 
 // DeleteRolePermission godoc
 // @Security ApiKeyAuth
-// @Router		/api/v1/permission [DELETE]
+// @Router		/api/v1/role-permission [DELETE]
 // @Summary		DELETE THE ROLE PERMISSION
 // @Description	THIS API DELETES THE ROLE PERMISSION
 // @Tags		ROLE-PERMISSIONS

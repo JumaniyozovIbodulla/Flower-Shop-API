@@ -46,6 +46,7 @@ type RolePermissionsStorage interface {
 type UserRolesStorage interface {
 	Create(ctx context.Context, req models.UserRole) error
 	Delete(ctx context.Context, req models.UserRole) error
+	Update(ctx context.Context, req models.UserRole) error
 }
 
 type IRedisStorage interface {

@@ -70,6 +70,12 @@ func New(store storage.IStorage, service service.IServiceManager, log logger.ILo
 	r.DELETE("/api/v1/role-permission", h.DeleteRolePermission)
 
 
+	// user-roles
+	r.POST("/api/v1/user-role", h.CreateUserRole)
+	r.DELETE("/api/v1/user-role", h.DeleteUserRole)
+	r.PUT("/api/v1/user-role", h.UpdateUserRole)
+
+
 	return r
 }
 

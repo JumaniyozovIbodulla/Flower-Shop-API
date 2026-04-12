@@ -58,3 +58,23 @@ func (u *userRolesRepo) Delete(ctx context.Context, req models.UserRole) error {
 	return nil
 }
 
+func (u *userRolesRepo) Update(ctx context.Context, req models.UserRole) error {
+	resp, err := u.db.Exec(ctx, `
+	UPDATE
+		user_roles
+	SET
+		role_id = $2
+	WHERE
+		user_id = $1;`, req.UserID, req.RoleID)
+
+	if err != nil {
+		return err
+	}
+
+	if resp.RowsAffected() == 0 {
+		return pkg.NotFoundErr
+	}
+
+	return nil
+}
+
