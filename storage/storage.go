@@ -13,6 +13,7 @@ type IStorage interface {
 	Permissions() PermissionStorage
 	RolePermissions() RolePermissionsStorage
 	UserRoles() UserRolesStorage
+	Flowers() FlowerStorage
 	Redis() IRedisStorage
 }
 
@@ -47,6 +48,14 @@ type UserRolesStorage interface {
 	Create(ctx context.Context, req models.UserRole) error
 	Delete(ctx context.Context, req models.UserRole) error
 	Update(ctx context.Context, req models.UserRole) error
+}
+
+type FlowerStorage interface {
+	Create(ctx context.Context, flower models.AddFlower) error
+	Update(ctx context.Context, flower models.UpdateFlower) error
+	Delete(ctx context.Context, ID string) error
+	Get(ctx context.Context, ID string) (models.Flower, error)
+	GetAll(ctx context.Context, req models.GetAllFlowersRequest) (models.GetAllFlowersResponse, error)
 }
 
 type IRedisStorage interface {

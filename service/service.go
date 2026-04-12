@@ -11,6 +11,7 @@ type IServiceManager interface {
 	Permission() permissionService
 	RolePermissions() rolePermissionsService
 	UserRoles() userRolesService
+	Flowers() flowerService
 }
 
 type Service struct {
@@ -19,6 +20,7 @@ type Service struct {
 	permissionService      permissionService
 	rolePermissionsService rolePermissionsService
 	userRolesService       userRolesService
+	flowerService          flowerService
 	logger                 logger.ILogger
 }
 
@@ -29,6 +31,7 @@ func New(storage storage.IStorage, logger logger.ILogger) Service {
 	services.permissionService = NewPermissionService(storage, logger)
 	services.rolePermissionsService = NewRolePermissionsService(storage, logger)
 	services.userRolesService = NewUserRolesService(storage, logger)
+	services.flowerService = NewFlowerService(storage, logger)
 	services.logger = logger
 
 	return services
@@ -54,3 +57,6 @@ func (s Service) UserRoles() userRolesService {
 	return s.userRolesService
 }
 
+func (s Service) Flowers() flowerService {
+	return s.flowerService
+}

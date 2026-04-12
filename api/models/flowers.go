@@ -19,6 +19,7 @@ type AddFlower struct {
 	Description string `json:"description" example:"Wonderful life is a classical bouquet made of beautiful autumn flowers and tender orchids."`
 	UnitPrice   uint64 `json:"unit_price" example:"8600"`
 	Stock       uint   `json:"stock" example:"1000"`
+	IsActive    bool   `json:"is_active" example:"true"`
 }
 
 type UpdateFlower struct {

@@ -20,7 +20,6 @@ func NewRoleService(storage storage.IStorage, logger logger.ILogger) roleService
 }
 
 func (r roleService) Create(ctx context.Context, role models.AddRole) error {
-
 	err := r.storage.Roles().Create(ctx, role)
 	if err != nil {
 		r.logger.Error("failed to create a new role: ", logger.Error(err))
